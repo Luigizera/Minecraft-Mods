@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:tomato_from_tomato_throwable"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tomato_throwable": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "lugomfoods:tomato_throwable"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_tomato_throwable",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:tomato_from_tomato_throwable"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,8 @@
+{
+  "item.lugomfoods.tomato": "Tomato",
+  "item.lugomfoods.tomato_throwable": "Throwable Tomato",
+  "item.lugomfoods.tomato_seeds": "Tomato Seeds",
+  "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
+  "advancement.description.lugomfoods.plant_seed": "Plant your first mod seed",
+  "itemgroup.lugommod.tomato": "Lugom Foods"
+}

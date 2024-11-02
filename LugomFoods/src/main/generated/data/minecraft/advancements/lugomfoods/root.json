@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "tomato": {
+      "conditions": {
+        "location": [
+          {
+            "block": "lugomfoods:tomato",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/husbandry.png",
+    "description": {
+      "translate": "advancement.description.lugomfoods.plant_seed"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "lugomfoods:tomato"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.title.lugomfoods.plant_seed"
+    }
+  },
+  "requirements": [
+    [
+      "tomato"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
