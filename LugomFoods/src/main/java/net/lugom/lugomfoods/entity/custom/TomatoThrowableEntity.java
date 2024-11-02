@@ -1,9 +1,14 @@
 package net.lugom.lugomfoods.entity.custom;
 
+import com.google.common.base.MoreObjects;
 import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
 import net.lugom.lugomfoods.particles.ModParticles;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,11 +61,21 @@ public class TomatoThrowableEntity extends ThrownItemEntity {
     protected void onEntityHit(EntityHitResult entityHitResult) {
         super.onEntityHit(entityHitResult);
         Entity entity = entityHitResult.getEntity();
-        float damage = entity instanceof LivingEntity ? 0.1f : 0.0f;
-        entity.damage(this.getDamageSources().thrown(this, this.getOwner()), damage);
-
+        Entity owner = this.getOwner();
+        float damage = owner instanceof LivingEntity ? 0.20f : 0.0f;
+        LivingEntity ownerLivingEntity = owner instanceof LivingEntity ? (LivingEntity)owner : null;
+        boolean bl = entity.damage(this.getDamageSources().thrown(this, ownerLivingEntity), damage);
+        if (bl) {
+            if (entity instanceof LivingEntity livingEntity2) {
+                livingEntity2.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 10*20), MoreObjects.firstNonNull(owner, this));
+                livingEntity2.addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 10*20), MoreObjects.firstNonNull(owner, this));
+            }
+        }
     }
 
+    @Override
+    public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
+    }
     @Override
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
