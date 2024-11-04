@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 public class ModBlocks {
 
     public static final Block TOMATO_CROP = Registry.register(Registries.BLOCK,
-                new Identifier(LugomFoods.MOD_ID, "tomato"),
+                new Identifier(LugomFoods.MOD_ID, "tomato_crop"),
                 new TomatoCropBlock(FabricBlockSettings.copyOf(Blocks.WHEAT)
                         .sounds(BlockSoundGroup.STEM)));
 

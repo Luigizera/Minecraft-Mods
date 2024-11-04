@@ -4,7 +4,7 @@
       "conditions": {
         "location": [
           {
-            "block": "lugomfoods:tomato",
+            "block": "lugomfoods:tomato_crop",
             "condition": "minecraft:block_state_property"
           }
         ]

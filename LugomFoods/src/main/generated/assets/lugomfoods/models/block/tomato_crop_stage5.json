@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cross",
   "textures": {
-    "cross": "lugomfoods:block/tomato_stage4"
+    "cross": "lugomfoods:block/tomato_crop_stage5"
   }
 }

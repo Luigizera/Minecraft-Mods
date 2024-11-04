@@ -1,12 +1,14 @@
-// 1.20.1	2024-11-04T03:41:17.479434	Lugom Foods/Model Definitions
-e53648c1bf3a316b73ec47722d3dbbb78848c552 assets\lugomfoods\models\block\tomato_stage5.json
-695009f0210a518ba06be155591baad8377074f4 assets\lugomfoods\blockstates\tomato.json
-76c586443323ae5cdb61dcd9567c360288d4d13e assets\lugomfoods\models\block\tomato_stage2.json
-a7003dbb540f28d60fda3890536c0ec339938f0a assets\lugomfoods\models\item\tomato_golden.json
-5bff2a93a0d8840cc21512071f5fc616573ff7d7 assets\lugomfoods\models\block\tomato_stage0.json
-43deb5c3d66b3e8f5e39a31c07e0fd5758863865 assets\lugomfoods\models\block\tomato_stage1.json
-36132bf3e2190026fb4b11c0b372e52e0a5c0ded assets\lugomfoods\models\block\tomato_stage4.json
-7c8a1283f19986aa4d3e9fe2d984099ed68ce3b9 assets\lugomfoods\models\block\tomato_stage3.json
+// 1.20.1	2024-11-04T04:57:35.2689631	Lugom Foods/Model Definitions
+f837b4201b66bef83429634f4ff7d87a3b31e41b assets\lugomfoods\blockstates\tomato_crop.json
+7135ea45e07249f93e3f47f61c5f733dbdfa26f9 assets\lugomfoods\models\block\tomato_crop_stage5.json
 f17546fb2a1954299eb463e415dc4d6ae7793d17 assets\lugomfoods\models\item\tomato_seeds.json
-70424c6080fab1ff1d03995e6fba20ef0d254767 assets\lugomfoods\models\item\tomato.json
+3c9e5d9ed0975aadd9611b8a2506a281966fd20a assets\lugomfoods\models\block\tomato_crop_stage2.json
 74e809544117319e358ec09553341a4ecdb52a9a assets\lugomfoods\models\item\tomato_throwable.json
+a7003dbb540f28d60fda3890536c0ec339938f0a assets\lugomfoods\models\item\tomato_golden.json
+591aab7e2148caaaf9b67a21e89933ae6d28fbbc assets\lugomfoods\models\block\tomato_crop_stage1.json
+c60f4e8ce50c34606e5c7d7207164ad46711ff39 assets\lugomfoods\models\block\tomato_crop_stage4.json
+b6b4074c3775aa0b1b686a23a743fb00f846ebad assets\lugomfoods\models\item\tomato_green.json
+f393fc7e6f9257e2de1d6bd0c99d0d6ab36c2e10 assets\lugomfoods\models\block\tomato_crop_stage0.json
+5262f89399672d5652f26202a51ea7ae3225fded assets\lugomfoods\models\block\tomato_crop_stage3.json
+70424c6080fab1ff1d03995e6fba20ef0d254767 assets\lugomfoods\models\item\tomato.json
+26c67eb513ae55bcf4d70f580f1d0f87961f3854 assets\lugomfoods\models\block\tomato_crop_stage6.json

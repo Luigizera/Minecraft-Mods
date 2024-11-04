@@ -27,8 +27,8 @@ import net.minecraft.world.explosion.Explosion;
 
 public class TomatoCropBlock extends CropBlock {
     private final Random random = Random.create();
-    public static final int MAX_AGE = Properties.AGE_5_MAX;
-    public static final IntProperty AGE = Properties.AGE_5;
+    public static final int MAX_AGE = 6;
+    public static final IntProperty AGE = IntProperty.of("age", 0, MAX_AGE);
     protected static final VoxelShape AGE_TO_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
     public TomatoCropBlock(Settings settings) {
         super(settings);
@@ -85,18 +85,25 @@ public class TomatoCropBlock extends CropBlock {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (state.get(AGE) != 5) {
+        if (state.get(AGE) < 5) {
             return super.onUse(state, world, pos, player, hand, hit);
         }
-        float chance = (float) random.nextBetween(1, 100) / 100;
-        if (!player.getStackInHand(hand).isOf(Items.SHEARS)) {
-            chance = 1f;
+        boolean isGreen = state.get(AGE) == 5;
+        if (player.getStackInHand(hand).isOf(Items.SHEARS) && !isGreen) {
+            float chance = (float) world.random.nextBetween(1, 100) / 100;
+            if(chance < 0.05f) {
+                dropStack(world, pos, new ItemStack(ModItems.TOMATO_GOLDEN, 1));
+            }
         }
-        int quantity = 1 + world.random.nextInt(4);
-        if(chance < 0.05f) {
-            dropStack(world, pos, new ItemStack(ModItems.TOMATO_GOLDEN, 1));
+        if(isGreen) {
+            if(player.getStackInHand(hand).isOf(Items.BONE_MEAL)) {
+                return super.onUse(state, world, pos, player, hand, hit);
+            }
+            dropStack(world, pos, new ItemStack(ModItems.TOMATO_GREEN, 1 + world.random.nextInt(3)));
         }
-        dropStack(world, pos, new ItemStack(ModItems.TOMATO, quantity));
+        else {
+            dropStack(world, pos, new ItemStack(ModItems.TOMATO, 1 + world.random.nextInt(3)));
+        }
         world.playSound(null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);
         BlockState blockState = state.with(AGE, Integer.valueOf(3));
         world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
@@ -106,12 +113,12 @@ public class TomatoCropBlock extends CropBlock {
 
     @Override
     public boolean emitsRedstonePower(BlockState state) {
-        return state.get(AGE) == 5;
+        return state.get(AGE) == MAX_AGE;
     }
 
     @Override
     public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        if(state.get(AGE) == 5) {
+        if(state.get(AGE) == MAX_AGE) {
             return 1;
         }
         return 0;

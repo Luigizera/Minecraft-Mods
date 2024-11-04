@@ -16,10 +16,10 @@
               "type": "minecraft:item",
               "conditions": [
                 {
-                  "block": "lugomfoods:tomato",
+                  "block": "lugomfoods:tomato_crop",
                   "condition": "minecraft:block_state_property",
                   "properties": {
-                    "age": "5"
+                    "age": "6"
                   }
                 }
               ],
@@ -38,10 +38,10 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "block": "lugomfoods:tomato",
+          "block": "lugomfoods:tomato_crop",
           "condition": "minecraft:block_state_property",
           "properties": {
-            "age": "5"
+            "age": "6"
           }
         }
       ],

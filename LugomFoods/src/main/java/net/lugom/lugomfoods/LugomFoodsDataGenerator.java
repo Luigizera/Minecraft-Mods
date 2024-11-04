@@ -17,6 +17,7 @@ import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.server.advancement.vanilla.VanillaHusbandryTabAdvancementGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.Items;
 import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.predicate.StatePredicate;
@@ -87,12 +88,13 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
 			blockStateModelGenerator.registerTintableCrossBlockStateWithStages(ModBlocks.TOMATO_CROP, BlockStateModelGenerator.TintType.NOT_TINTED, TomatoCropBlock.AGE,
-					0, 1, 2, 3, 4, 5);
+					0, 1, 2, 3, 4, 5, 6);
 		}
 
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			itemModelGenerator.register(ModItems.TOMATO, Models.GENERATED);
+			itemModelGenerator.register(ModItems.TOMATO_GREEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.TOMATO_GOLDEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.TOMATO_THROWABLE, Models.GENERATED);
 		}
