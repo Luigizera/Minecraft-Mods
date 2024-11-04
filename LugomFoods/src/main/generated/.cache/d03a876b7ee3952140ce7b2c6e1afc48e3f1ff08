@@ -1,9 +1,11 @@
-// 1.20.1	2024-11-04T04:57:35.2619677	Lugom Foods/Recipes
+// 1.20.1	2024-11-04T08:42:08.2538206	Lugom Foods/Recipes
 4fa44c8eb44cda4ff2904733555737568dd12a06 data\lugomfoods\recipes\tomato_from_tomato_golden.json
 d14500568db6f61aafeb61b80a7f9261f8bca68e data\lugomfoods\advancements\recipes\misc\tomato_from_tomato_golden.json
 e9f73b80ce896417d792fc4440047ad55fec5f87 data\lugomfoods\advancements\recipes\misc\tomato_seeds_from_tomato.json
 dc22e62a03d6a1eb11810d0c72561bd4e2dc51da data\lugomfoods\advancements\recipes\combat\tomato_throwable.json
 f54dd454c5b7b47a9206097c65d2c094d438845b data\lugomfoods\advancements\recipes\misc\tomato_from_tomato_throwable.json
+e60e08f2a6c92d818715bd4156fa83f070cdbd93 data\lugomfoods\recipes\strawberry_from_strawberry_golden.json
 5c8a3efce1bf368cf92188aaf9a11b168897cefa data\lugomfoods\recipes\tomato_seeds_from_tomato.json
 2c10aeed5068973744e6dc32ffe0c0e369f2b595 data\lugomfoods\recipes\tomato_throwable.json
 cb54365f782fd837430a4f0b4517a0cff0937a4c data\lugomfoods\recipes\tomato_from_tomato_throwable.json
+abb9051a8ecf6b6b427350f3e9d16369312a9257 data\lugomfoods\advancements\recipes\misc\strawberry_from_strawberry_golden.json

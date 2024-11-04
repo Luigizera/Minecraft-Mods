@@ -1,12 +1,18 @@
 {
   "item.lugomfoods.tomato": "Tomate",
-  "item.lugomfoods.tomato_green": "Tomate não maduro",
-  "item.lugomfoods.tomato_throwable": "Tomate arremessável",
-  "item.lugomfoods.tomato_seeds": "Sementes de tomate",
+  "item.lugomfoods.tomato_green": "Tomate não Maduro",
+  "item.lugomfoods.tomato_throwable": "Tomate Arremessável",
+  "item.lugomfoods.tomato_seeds": "Sementes de Tomate",
   "item.lugomfoods.tomato_golden": "Tomate Dourado",
+  "item.lugomfoods.strawberry": "Morango",
+  "item.lugomfoods.strawberry_green": "Morango não Maduro",
+  "item.lugomfoods.strawberry_golden": "Morango Dourado",
+  "item.lugomfoods.strawberry_seeds": "Sementes de Morango",
+
   "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
   "advancement.description.lugomfoods.plant_seed": "Plante sua primeira semente do mod",
   "advancement.title.lugomfoods.got_golden_ingredient": "Adoro Ouro",
   "advancement.description.lugomfoods.got_golden_ingredient": "Consiga um ingrediente dourado",
+
   "itemgroup.lugommod.tomato": "Lugom Foods"
 }

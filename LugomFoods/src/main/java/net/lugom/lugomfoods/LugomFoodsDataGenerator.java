@@ -5,10 +5,12 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.*;
 import net.lugom.lugomfoods.block.ModBlocks;
+import net.lugom.lugomfoods.block.custom.StrawberryCropBlock;
 import net.lugom.lugomfoods.block.custom.TomatoCropBlock;
 import net.lugom.lugomfoods.item.ModItems;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
+import net.minecraft.advancement.CriterionMerger;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.advancement.criterion.ItemCriterion;
 import net.minecraft.block.Block;
@@ -73,6 +75,8 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 		public void generate() {
 			addDrop(ModBlocks.TOMATO_CROP, cropDrops(ModBlocks.TOMATO_CROP, ModItems.TOMATO, ModItems.TOMATO_SEEDS,
 					generateCropBuilder(ModBlocks.TOMATO_CROP, TomatoCropBlock.AGE, TomatoCropBlock.MAX_AGE)));
+			addDrop(ModBlocks.STRAWBERRY_CROP, cropDrops(ModBlocks.STRAWBERRY_CROP, ModItems.STRAWBERRY, ModItems.STRAWBERRY_SEEDS,
+					generateCropBuilder(ModBlocks.STRAWBERRY_CROP, TomatoCropBlock.AGE, TomatoCropBlock.MAX_AGE)));
 		}
 
 		public static BlockStatePropertyLootCondition.Builder generateCropBuilder(Block block, IntProperty blockAge, int blockMax_Age) {
@@ -89,6 +93,8 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 		public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
 			blockStateModelGenerator.registerTintableCrossBlockStateWithStages(ModBlocks.TOMATO_CROP, BlockStateModelGenerator.TintType.NOT_TINTED, TomatoCropBlock.AGE,
 					0, 1, 2, 3, 4, 5, 6);
+			blockStateModelGenerator.registerCrop(ModBlocks.STRAWBERRY_CROP, StrawberryCropBlock.AGE,
+					0, 1, 2, 3, 4, 5);
 		}
 
 		@Override
@@ -97,6 +103,9 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.TOMATO_GREEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.TOMATO_GOLDEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.TOMATO_THROWABLE, Models.GENERATED);
+			itemModelGenerator.register(ModItems.STRAWBERRY, Models.GENERATED);
+			itemModelGenerator.register(ModItems.STRAWBERRY_GREEN, Models.GENERATED);
+			itemModelGenerator.register(ModItems.STRAWBERRY_GOLDEN, Models.GENERATED);
 		}
 	}
 
@@ -116,6 +125,10 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 			offerShapelessRecipe(consumer, ModItems.TOMATO_SEEDS, ModItems.TOMATO, null, 4);
 			offerShapelessRecipe(consumer, ModItems.TOMATO, ModItems.TOMATO_GOLDEN, null, 4);
 			offer2x2CompactingRecipe(consumer, RecipeCategory.COMBAT, ModItems.TOMATO_THROWABLE, ModItems.TOMATO);
+
+			//STRAWBERRY RECIPES
+			offerShapelessRecipe(consumer, ModItems.STRAWBERRY, ModItems.STRAWBERRY_GOLDEN, null, 4);
+
 		}
 	}
 
@@ -137,7 +150,7 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 							true, // Announce to chat
 							false // Hidden in the advancement tab
 					)
-					.criterion("got_tomato", ItemCriterion.Conditions.createPlacedBlock(ModBlocks.TOMATO_CROP))
+					.criterion("planted_tomato", ItemCriterion.Conditions.createPlacedBlock(ModBlocks.TOMATO_CROP))
 					.build(consumer, LugomFoods.MOD_ID + "/root");
 
 			Advancement got_tomato_golden = Advancement.Builder.create().parent(root)

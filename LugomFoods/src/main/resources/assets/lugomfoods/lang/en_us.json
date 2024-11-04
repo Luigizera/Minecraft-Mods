@@ -4,9 +4,15 @@
   "item.lugomfoods.tomato_throwable": "Throwable Tomato",
   "item.lugomfoods.tomato_seeds": "Tomato Seeds",
   "item.lugomfoods.tomato_golden": "Golden Tomato",
+  "item.lugomfoods.strawberry": "Strawberry",
+  "item.lugomfoods.strawberry_green": "Unripe Strawberry",
+  "item.lugomfoods.strawberry_golden": "Golden Strawberry",
+  "item.lugomfoods.strawberry_seeds": "Strawberry Seeds",
+
   "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
   "advancement.description.lugomfoods.plant_seed": "Plant your first mod seed",
   "advancement.title.lugomfoods.got_golden_ingredient": "The Odds Are On Our Side",
   "advancement.description.lugomfoods.got_golden_ingredient": "Get a golden ingredient",
+
   "itemgroup.lugommod.tomato": "Lugom Foods"
 }

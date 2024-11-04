@@ -19,6 +19,10 @@ public class ModItemsGroup {
                         entries.add(ModItems.TOMATO_GOLDEN);
                         entries.add(ModItems.TOMATO_THROWABLE);
                         entries.add(ModItems.TOMATO_SEEDS);
+                        entries.add(ModItems.STRAWBERRY);
+                        entries.add(ModItems.STRAWBERRY_GREEN);
+                        entries.add(ModItems.STRAWBERRY_GOLDEN);
+                        entries.add(ModItems.STRAWBERRY_SEEDS);
                     }).build());
 
     public static void initialize() {

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_strawberry_golden": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "lugomfoods:strawberry_golden"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:strawberry_from_strawberry_golden"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_strawberry_golden",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:strawberry_from_strawberry_golden"
+    ]
+  },
+  "sends_telemetry_event": false
+}

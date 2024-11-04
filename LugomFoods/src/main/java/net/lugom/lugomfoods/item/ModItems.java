@@ -16,16 +16,23 @@ import net.minecraft.util.Rarity;
 
 public class ModItems {
 
-    public static final Item TOMATO = register("tomato", new Item(new FabricItemSettings().food(ModFoodComponents.INGREDIENT_TYPE)));
-    public static final Item TOMATO_GREEN = register("tomato_green", new Item(new FabricItemSettings().food(ModFoodComponents.INGREDIENT_TOXIC_TYPE)));
-    public static final Item TOMATO_GOLDEN = register("tomato_golden", new Item(new FabricItemSettings().rarity(Rarity.RARE).food(ModFoodComponents.INGREDIENT_GOLDEN_TYPE)));
+    public static final Item TOMATO = register("tomato", new Item(new FabricItemSettings().food(ModFoodComponents.TOMATO)));
+    public static final Item TOMATO_GREEN = register("tomato_green", new Item(new FabricItemSettings().food(ModFoodComponents.TOMATO_GREEN)));
+    public static final Item TOMATO_GOLDEN = register("tomato_golden", new Item(new FabricItemSettings().rarity(Rarity.RARE).food(ModFoodComponents.TOMATO_GOLDEN)));
     public static final Item TOMATO_THROWABLE = register("tomato_throwable", new TomatoThrowableItem(new FabricItemSettings(), true));
     public static final Item TOMATO_SEEDS = register("tomato_seeds", new AliasedBlockItem(ModBlocks.TOMATO_CROP, new FabricItemSettings()));
+    public static final Item STRAWBERRY = register("strawberry", new Item(new FabricItemSettings().food(ModFoodComponents.STRAWBERRY)));
+    public static final Item STRAWBERRY_GREEN = register("strawberry_green", new Item(new FabricItemSettings().food(ModFoodComponents.STRAWBERRY_GREEN)));
+    public static final Item STRAWBERRY_GOLDEN = register("strawberry_golden", new Item(new FabricItemSettings().food(ModFoodComponents.STRAWBERRY_GOLDEN)));
+    public static final Item STRAWBERRY_SEEDS = register("strawberry_seeds", new AliasedBlockItem(ModBlocks.STRAWBERRY_CROP, new FabricItemSettings()));
 
     private static void addItemsToFoodGroup(FabricItemGroupEntries entries) {
         entries.add(TOMATO);
         entries.add(TOMATO_GREEN);
         entries.add(TOMATO_GOLDEN);
+        entries.add(STRAWBERRY);
+        entries.add(STRAWBERRY_GREEN);
+        entries.add(STRAWBERRY_GOLDEN);
     }
     private static void addItemsToCombatGroup(FabricItemGroupEntries entries) {
         entries.add(TOMATO_THROWABLE);
@@ -33,6 +40,7 @@ public class ModItems {
 
     private static void addItemsToNaturalGroup(FabricItemGroupEntries entries) {
         entries.add(TOMATO_SEEDS);
+        entries.add(STRAWBERRY_SEEDS);
     }
 
     private static <T extends Item> T register(String name, T item) {
@@ -47,26 +55,44 @@ public class ModItems {
     }
 
     private static class ModFoodComponents {
-        protected static final FoodComponent INGREDIENT_TYPE = new FoodComponent.Builder()
+        protected static final FoodComponent TOMATO = new FoodComponent.Builder()
                 .hunger(1)
-                .saturationModifier(0.6F)
-                .snack()
+                .saturationModifier(0.6f)
                 .alwaysEdible()
                 .statusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 5*20),  0.05f)
                 .build();
-        protected static final FoodComponent INGREDIENT_GOLDEN_TYPE = new FoodComponent.Builder()
+        protected static final FoodComponent TOMATO_GOLDEN = new FoodComponent.Builder()
                 .hunger(1)
-                .saturationModifier(1.2F)
-                .snack()
+                .saturationModifier(1.2f)
                 .alwaysEdible()
                 .statusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 10*20),  0.05f)
                 .build();
-        protected static final FoodComponent INGREDIENT_TOXIC_TYPE = new FoodComponent.Builder()
+        protected static final FoodComponent TOMATO_GREEN = new FoodComponent.Builder()
                 .hunger(1)
-                .saturationModifier(0.3F)
+                .saturationModifier(0.3f)
+                .alwaysEdible()
+                .statusEffect(new StatusEffectInstance(StatusEffects.POISON, 5*20), 0.6f)
+                .build();
+        protected static final FoodComponent STRAWBERRY = new FoodComponent.Builder()
+                .hunger(1)
+                .saturationModifier(0.6f)
                 .snack()
                 .alwaysEdible()
-                .statusEffect(new StatusEffectInstance(StatusEffects.POISON, 5*20), 0.6F)
+                .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10*20),  0.1f)
+                .build();
+        protected static final FoodComponent STRAWBERRY_GOLDEN = new FoodComponent.Builder()
+                .hunger(1)
+                .saturationModifier(1.2f)
+                .snack()
+                .alwaysEdible()
+                .statusEffect(new StatusEffectInstance(StatusEffects.SPEED, 10*20, 1),  0.1f)
+                .build();
+        protected static final FoodComponent STRAWBERRY_GREEN = new FoodComponent.Builder()
+                .hunger(1)
+                .saturationModifier(0.3f)
+                .snack()
+                .alwaysEdible()
+                .statusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 5*20), 0.6f)
                 .build();
     }
 }
