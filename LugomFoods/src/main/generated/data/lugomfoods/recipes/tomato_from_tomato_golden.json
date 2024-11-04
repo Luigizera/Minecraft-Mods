@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "lugomfoods:tomato_golden"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "item": "lugomfoods:tomato"
+  }
+}

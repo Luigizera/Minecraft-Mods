@@ -93,6 +93,7 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 			itemModelGenerator.register(ModItems.TOMATO, Models.GENERATED);
+			itemModelGenerator.register(ModItems.TOMATO_GOLDEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.TOMATO_THROWABLE, Models.GENERATED);
 		}
 	}
@@ -107,9 +108,11 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 			//TOMATO RECIPES
 			//2x2 TOMATO -> 1 THROWABLE TOMATO
 			//1 THROWABLE TOMATO -> 4 TOMATO
+			//1 TOMATO GOLDEN -> 4 TOMATO
 			//1 TOMATO -> 4 TOMATO SEEDS
 			offerShapelessRecipe(consumer, ModItems.TOMATO, ModItems.TOMATO_THROWABLE, null, 4);
 			offerShapelessRecipe(consumer, ModItems.TOMATO_SEEDS, ModItems.TOMATO, null, 4);
+			offerShapelessRecipe(consumer, ModItems.TOMATO, ModItems.TOMATO_GOLDEN, null, 4);
 			offer2x2CompactingRecipe(consumer, RecipeCategory.COMBAT, ModItems.TOMATO_THROWABLE, ModItems.TOMATO);
 		}
 	}
@@ -121,7 +124,7 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateAdvancement(Consumer<Advancement> consumer) {
-			Advancement rootAdvancement = Advancement.Builder.create()
+			Advancement root = Advancement.Builder.create()
 					.display(
 							ModItems.TOMATO, // The display icon
 							Text.translatable("advancement.title." + LugomFoods.MOD_ID + ".plant_seed"), // The title
@@ -132,23 +135,23 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 							true, // Announce to chat
 							false // Hidden in the advancement tab
 					)
-					.criterion("tomato", ItemCriterion.Conditions.createPlacedBlock(ModBlocks.TOMATO_CROP))
+					.criterion("got_tomato", ItemCriterion.Conditions.createPlacedBlock(ModBlocks.TOMATO_CROP))
 					.build(consumer, LugomFoods.MOD_ID + "/root");
 
-			/*Advancement testAdvancement = Advancement.Builder.create().parent(rootAdvancement)
+			Advancement got_tomato_golden = Advancement.Builder.create().parent(root)
 					.display(
-							ModItems.TOMATO, // The display icon
-							Text.translatable("advancement.title." + LugomFoods.MOD_ID + ".plant_seed"), // The title
-							Text.translatable("advancement.description." + LugomFoods.MOD_ID + ".plant_seed"), // The description
-							new Identifier("textures/gui/advancements/backgrounds/husbandry.png"), // Background image used
-							AdvancementFrame.TASK, // Options: TASK, CHALLENGE, GOAL
-							true, // Show toast top right
-							true, // Announce to chat
+							ModItems.TOMATO_GOLDEN,
+							Text.translatable("advancement.title." + LugomFoods.MOD_ID + ".got_golden_ingredient"),
+							Text.translatable("advancement.description." + LugomFoods.MOD_ID + ".got_golden_ingredient"),
+							null,
+							AdvancementFrame.TASK,
+							true,
+							true,
 							false // Hidden in the advancement tab
 					)
-					.criterion("tomato", ItemCriterion.Conditions.createPlacedBlock(ModBlocks.TOMATO_CROP))
-					.build(consumer, LugomFoods.MOD_ID + "/root");
-			*/
+					.criterion("got_tomato_golden", InventoryChangedCriterion.Conditions.items(ModItems.TOMATO_GOLDEN))
+					.build(consumer, LugomFoods.MOD_ID + "/got_golden_ingredient");
+
 		}
 	}
 }

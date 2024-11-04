@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:lugomfoods/root",
+  "criteria": {
+    "got_tomato_golden": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "lugomfoods:tomato_golden"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.description.lugomfoods.got_golden_ingredient"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "lugomfoods:tomato_golden"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.title.lugomfoods.got_golden_ingredient"
+    }
+  },
+  "requirements": [
+    [
+      "got_tomato_golden"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

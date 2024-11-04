@@ -72,10 +72,6 @@ public class TomatoThrowableEntity extends ThrownItemEntity {
             }
         }
     }
-
-    @Override
-    public void onProjectileHit(World world, BlockState state, BlockHitResult hit, ProjectileEntity projectile) {
-    }
     @Override
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);

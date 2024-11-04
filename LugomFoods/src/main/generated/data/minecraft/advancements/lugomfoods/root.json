@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "tomato": {
+    "got_tomato": {
       "conditions": {
         "location": [
           {
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "tomato"
+      "got_tomato"
     ]
   ],
   "sends_telemetry_event": true

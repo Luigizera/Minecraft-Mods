@@ -2,7 +2,10 @@
   "item.lugomfoods.tomato": "Tomate",
   "item.lugomfoods.tomato_throwable": "Tomate arremessável",
   "item.lugomfoods.tomato_seeds": "Sementes de tomate",
+  "item.lugomfoods.tomato_golden": "Tomate Dourado",
   "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
   "advancement.description.lugomfoods.plant_seed": "Plante sua primeira semente do mod",
+  "advancement.title.lugomfoods.got_golden_ingredient": "Adoro Ouro",
+  "advancement.description.lugomfoods.got_golden_ingredient": "Consiga um ingrediente dourado",
   "itemgroup.lugommod.tomato": "Lugom Foods"
 }

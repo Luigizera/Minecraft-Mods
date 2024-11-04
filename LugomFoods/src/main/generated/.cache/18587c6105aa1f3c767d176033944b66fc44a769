@@ -1,7 +1,8 @@
-// 1.20.1	2024-11-02T01:40:16.5785543	Lugom Foods/Model Definitions
+// 1.20.1	2024-11-04T03:41:17.479434	Lugom Foods/Model Definitions
 e53648c1bf3a316b73ec47722d3dbbb78848c552 assets\lugomfoods\models\block\tomato_stage5.json
 695009f0210a518ba06be155591baad8377074f4 assets\lugomfoods\blockstates\tomato.json
 76c586443323ae5cdb61dcd9567c360288d4d13e assets\lugomfoods\models\block\tomato_stage2.json
+a7003dbb540f28d60fda3890536c0ec339938f0a assets\lugomfoods\models\item\tomato_golden.json
 5bff2a93a0d8840cc21512071f5fc616573ff7d7 assets\lugomfoods\models\block\tomato_stage0.json
 43deb5c3d66b3e8f5e39a31c07e0fd5758863865 assets\lugomfoods\models\block\tomato_stage1.json
 36132bf3e2190026fb4b11c0b372e52e0a5c0ded assets\lugomfoods\models\block\tomato_stage4.json

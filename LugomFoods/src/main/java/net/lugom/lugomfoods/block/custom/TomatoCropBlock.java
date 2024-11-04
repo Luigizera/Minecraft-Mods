@@ -17,12 +17,16 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.event.GameEvent;
+import net.minecraft.world.explosion.Explosion;
 
 public class TomatoCropBlock extends CropBlock {
+    private final Random random = Random.create();
     public static final int MAX_AGE = Properties.AGE_5_MAX;
     public static final IntProperty AGE = Properties.AGE_5;
     protected static final VoxelShape AGE_TO_SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
@@ -66,25 +70,43 @@ public class TomatoCropBlock extends CropBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (state.get(AGE) == 5) {
-            int quantity = 1 + world.random.nextInt(4);
-            dropStack(world, pos, new ItemStack(ModItems.TOMATO, quantity));
-            world.playSound(null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);
-            BlockState blockState = state.with(AGE, Integer.valueOf(3));
-            world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
-            world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(player, blockState));
-            return ActionResult.success(world.isClient);
+    public boolean shouldDropItemsOnExplosion(Explosion explosion) {
+        return false;
+    }
+
+    @Override
+    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+        float chance = (float) random.nextBetween(1, 100) / 100;
+        if(chance < 0.05f) {
+            dropStack(world, pos, new ItemStack(ModItems.TOMATO_GOLDEN, 1));
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        super.onBreak(world, pos, state, player);
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        if (state.get(AGE) != 5) {
+            return super.onUse(state, world, pos, player, hand, hit);
+        }
+        float chance = (float) random.nextBetween(1, 100) / 100;
+        if (!player.getStackInHand(hand).isOf(Items.SHEARS)) {
+            chance = 1f;
+        }
+        int quantity = 1 + world.random.nextInt(4);
+        if(chance < 0.05f) {
+            dropStack(world, pos, new ItemStack(ModItems.TOMATO_GOLDEN, 1));
+        }
+        dropStack(world, pos, new ItemStack(ModItems.TOMATO, quantity));
+        world.playSound(null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);
+        BlockState blockState = state.with(AGE, Integer.valueOf(3));
+        world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
+        world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(player, blockState));
+        return ActionResult.success(world.isClient);
     }
 
     @Override
     public boolean emitsRedstonePower(BlockState state) {
-        if(state.get(AGE) == 5) {
-            return true;
-        }
-        return false;
+        return state.get(AGE) == 5;
     }
 
     @Override
@@ -93,10 +115,5 @@ public class TomatoCropBlock extends CropBlock {
             return 1;
         }
         return 0;
-    }
-
-    @Override
-    public int getStrongRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        return super.getStrongRedstonePower(state, world, pos, direction);
     }
 }

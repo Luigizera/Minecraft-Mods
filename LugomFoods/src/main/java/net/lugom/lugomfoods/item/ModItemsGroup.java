@@ -15,6 +15,7 @@ public class ModItemsGroup {
             FabricItemGroup.builder().displayName(Text.translatable("itemgroup.lugommod.tomato"))
                     .icon(() -> new ItemStack(ModItems.TOMATO)).entries((displayContext, entries) -> {
                         entries.add(ModItems.TOMATO);
+                        entries.add(ModItems.TOMATO_GOLDEN);
                         entries.add(ModItems.TOMATO_THROWABLE);
                         entries.add(ModItems.TOMATO_SEEDS);
                     }).build());

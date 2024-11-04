@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:tomato_from_tomato_golden"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tomato_golden": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "lugomfoods:tomato_golden"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_tomato_golden",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:tomato_from_tomato_golden"
+    ]
+  },
+  "sends_telemetry_event": false
+}
