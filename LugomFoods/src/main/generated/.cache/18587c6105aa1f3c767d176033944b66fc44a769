@@ -1,4 +1,4 @@
-// 1.20.1	2024-11-04T08:42:08.2588176	Lugom Foods/Model Definitions
+// 1.20.1	2024-11-08T03:55:28.938416	Lugom Foods/Model Definitions
 f837b4201b66bef83429634f4ff7d87a3b31e41b assets\lugomfoods\blockstates\tomato_crop.json
 ab27fcc5b3486d0ac3e1897e5fa2a1c35653dca2 assets\lugomfoods\models\block\strawberry_crop_stage0.json
 7135ea45e07249f93e3f47f61c5f733dbdfa26f9 assets\lugomfoods\models\block\tomato_crop_stage5.json
@@ -8,11 +8,12 @@ de93f0ab2c417a6ff5e3f84187fe198ccfa2091a assets\lugomfoods\models\block\strawber
 74e809544117319e358ec09553341a4ecdb52a9a assets\lugomfoods\models\item\tomato_throwable.json
 a7003dbb540f28d60fda3890536c0ec339938f0a assets\lugomfoods\models\item\tomato_golden.json
 f393fc7e6f9257e2de1d6bd0c99d0d6ab36c2e10 assets\lugomfoods\models\block\tomato_crop_stage0.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets\lugomfoods\models\item\tomato_dude_spawn_egg.json
 5262f89399672d5652f26202a51ea7ae3225fded assets\lugomfoods\models\block\tomato_crop_stage3.json
 8ea81d3f878a200f28d79013cf433c1a854f86dd assets\lugomfoods\models\item\strawberry_seeds.json
 70424c6080fab1ff1d03995e6fba20ef0d254767 assets\lugomfoods\models\item\tomato.json
-26c67eb513ae55bcf4d70f580f1d0f87961f3854 assets\lugomfoods\models\block\tomato_crop_stage6.json
 e403ffc6c307f0492666c68db5c5541e617c7cb6 assets\lugomfoods\models\block\strawberry_crop_stage1.json
+26c67eb513ae55bcf4d70f580f1d0f87961f3854 assets\lugomfoods\models\block\tomato_crop_stage6.json
 ee6ee757929fe483f8147b046d6b259dd294218a assets\lugomfoods\models\block\strawberry_crop_stage4.json
 6f910580b069b258ae4e1effdc708628532be160 assets\lugomfoods\models\item\strawberry.json
 bb9bacbc838195839fd64295de11dea48fced8b5 assets\lugomfoods\models\item\strawberry_golden.json

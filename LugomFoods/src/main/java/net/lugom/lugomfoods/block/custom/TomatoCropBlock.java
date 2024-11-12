@@ -1,16 +1,18 @@
 package net.lugom.lugomfoods.block.custom;
 
+import net.lugom.lugomfoods.entity.ModEntities;
+import net.lugom.lugomfoods.entity.custom.TomatoDudeEntity;
 import net.lugom.lugomfoods.item.ModItems;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -21,7 +23,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.Explosion;
 
@@ -71,6 +73,32 @@ public class TomatoCropBlock extends CropBlock {
 
     @Override
     public boolean shouldDropItemsOnExplosion(Explosion explosion) {
+        return false;
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        super.randomTick(state, world, pos, random);
+        if (!world.isClient) {
+            if (isTomatoCropNearbyMaxAge(world, pos) && (float) random.nextBetween(0, 100) / 100 < 0.05F) {
+                TomatoDudeEntity tomatoDudeEntity = ModEntities.TOMATO_DUDE.create(world);
+                if (tomatoDudeEntity != null) {
+                    tomatoDudeEntity.refreshPositionAndAngles(pos.getX(), pos.getY(), pos.getZ(), 0, 0.0F);
+                    world.spawnEntity(tomatoDudeEntity);
+                }
+            }
+        }
+    }
+
+    private boolean isTomatoCropNearbyMaxAge(WorldView world, BlockPos pos) {
+        for (BlockPos blockPos : BlockPos.iterate(pos.add(-1, 0, -1), pos.add(1, 0, 1))) {
+            BlockState blockState = world.getBlockState(blockPos);
+            if (blockState.getBlock() instanceof TomatoCropBlock tomatoCrop && blockPos != pos) {
+                if(tomatoCrop.getAge(blockState) == tomatoCrop.getMaxAge() ) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

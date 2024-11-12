@@ -4,10 +4,13 @@
   "item.lugomfoods.tomato_throwable": "Tomate Arremessável",
   "item.lugomfoods.tomato_seeds": "Sementes de Tomate",
   "item.lugomfoods.tomato_golden": "Tomate Dourado",
+  "item.lugomfoods.tomato_dude_spawn_egg": "Ovo gerador de Amigo Tomate",
   "item.lugomfoods.strawberry": "Morango",
   "item.lugomfoods.strawberry_green": "Morango não Maduro",
   "item.lugomfoods.strawberry_golden": "Morango Dourado",
   "item.lugomfoods.strawberry_seeds": "Sementes de Morango",
+
+  "entity.lugomfoods.tomato_dude": "Amigo Tomate",
 
   "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
   "advancement.description.lugomfoods.plant_seed": "Plante sua primeira semente do mod",

@@ -1,8 +1,8 @@
 package net.lugom.lugomfoods;
 
 import net.fabricmc.api.ModInitializer;
-
 import net.lugom.lugomfoods.block.ModBlocks;
+import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
 import net.lugom.lugomfoods.item.ModItemsGroup;
 import net.lugom.lugomfoods.particles.ModParticles;
@@ -22,5 +22,6 @@ public class LugomFoods implements ModInitializer {
 		ModItemsGroup.initialize();
 		ModParticles.initialize();
 		ModVillagerTrades.initialize();
+		ModEntities.initialize();
 	}
 }

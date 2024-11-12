@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.lugom.lugomfoods.LugomFoods;
 import net.lugom.lugomfoods.block.ModBlocks;
+import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.custom.TomatoThrowableItem;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -25,8 +26,15 @@ public class ModItems {
     public static final Item STRAWBERRY_GREEN = register("strawberry_green", new Item(new FabricItemSettings().food(ModFoodComponents.STRAWBERRY_GREEN)));
     public static final Item STRAWBERRY_GOLDEN = register("strawberry_golden", new Item(new FabricItemSettings().food(ModFoodComponents.STRAWBERRY_GOLDEN)));
     public static final Item STRAWBERRY_SEEDS = register("strawberry_seeds", new AliasedBlockItem(ModBlocks.STRAWBERRY_CROP, new FabricItemSettings()));
+    public static final Item TOMATO_DUDE_SPAWN_EGG = register("tomato_dude_spawn_egg", new SpawnEggItem(ModEntities.TOMATO_DUDE, 0x000000, 0xFFFFFF,new FabricItemSettings()));
 
-    private static void addItemsToFoodGroup(FabricItemGroupEntries entries) {
+    public static final Item[] INGREDIENTS_SIMPLE = new Item[]{TOMATO, STRAWBERRY};
+    public static final Item[] INGREDIENTS_GREEN = new Item[]{TOMATO_GREEN, STRAWBERRY_GREEN};
+    public static final Item[] INGREDIENTS_GOLDEN = new Item[]{TOMATO_GOLDEN, STRAWBERRY_GOLDEN};
+    public static final Item[] SEEDS = new Item[]{TOMATO_SEEDS, STRAWBERRY_SEEDS};
+
+
+    private static void addItemsToIngredientsGroup(FabricItemGroupEntries entries) {
         entries.add(TOMATO);
         entries.add(TOMATO_GREEN);
         entries.add(TOMATO_GOLDEN);
@@ -49,7 +57,7 @@ public class ModItems {
 
     public static void initialize() {
         LugomFoods.LOGGER.info(LugomFoods.MOD_ID + ": Registering items");
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK).register(ModItems::addItemsToFoodGroup);
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(ModItems::addItemsToIngredientsGroup);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(ModItems::addItemsToCombatGroup);
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(ModItems::addItemsToNaturalGroup);
     }

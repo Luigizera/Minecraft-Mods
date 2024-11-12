@@ -10,17 +10,14 @@ import net.lugom.lugomfoods.block.custom.TomatoCropBlock;
 import net.lugom.lugomfoods.item.ModItems;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementFrame;
-import net.minecraft.advancement.CriterionMerger;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.advancement.criterion.ItemCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.Model;
 import net.minecraft.data.client.Models;
-import net.minecraft.data.server.advancement.vanilla.VanillaHusbandryTabAdvancementGenerator;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.item.Items;
 import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.recipe.book.RecipeCategory;
@@ -29,6 +26,7 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -106,6 +104,8 @@ public class LugomFoodsDataGenerator implements DataGeneratorEntrypoint {
 			itemModelGenerator.register(ModItems.STRAWBERRY, Models.GENERATED);
 			itemModelGenerator.register(ModItems.STRAWBERRY_GREEN, Models.GENERATED);
 			itemModelGenerator.register(ModItems.STRAWBERRY_GOLDEN, Models.GENERATED);
+			itemModelGenerator.register(ModItems.TOMATO_DUDE_SPAWN_EGG,
+					new Model(Optional.of(new Identifier("item/template_spawn_egg")), Optional.empty()));
 		}
 	}
 

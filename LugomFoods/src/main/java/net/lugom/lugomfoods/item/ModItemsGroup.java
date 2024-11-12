@@ -23,6 +23,7 @@ public class ModItemsGroup {
                         entries.add(ModItems.STRAWBERRY_GREEN);
                         entries.add(ModItems.STRAWBERRY_GOLDEN);
                         entries.add(ModItems.STRAWBERRY_SEEDS);
+                        entries.add(ModItems.TOMATO_DUDE_SPAWN_EGG);
                     }).build());
 
     public static void initialize() {

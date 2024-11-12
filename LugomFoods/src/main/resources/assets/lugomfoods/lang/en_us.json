@@ -4,10 +4,13 @@
   "item.lugomfoods.tomato_throwable": "Throwable Tomato",
   "item.lugomfoods.tomato_seeds": "Tomato Seeds",
   "item.lugomfoods.tomato_golden": "Golden Tomato",
+  "item.lugomfoods.tomato_dude_spawn_egg": "Tomato Friend Spawn Egg",
   "item.lugomfoods.strawberry": "Strawberry",
   "item.lugomfoods.strawberry_green": "Unripe Strawberry",
   "item.lugomfoods.strawberry_golden": "Golden Strawberry",
   "item.lugomfoods.strawberry_seeds": "Strawberry Seeds",
+
+  "entity.lugomfoods.tomato_dude": "Tomato Friend",
 
   "advancement.title.lugomfoods.plant_seed": "Lugom Foods",
   "advancement.description.lugomfoods.plant_seed": "Plant your first mod seed",
