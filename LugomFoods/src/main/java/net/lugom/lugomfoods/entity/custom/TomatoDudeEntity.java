@@ -2,6 +2,9 @@ package net.lugom.lugomfoods.entity.custom;
 
 import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
+import net.lugom.lugomfoods.util.ImplementedInventory;
+import net.lugom.lugomfoods.screen.custom.TomatoScreenHandler;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RangedAttackMob;
 import net.minecraft.entity.ai.goal.*;
@@ -11,35 +14,46 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob {
+public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob, NamedScreenHandlerFactory, ImplementedInventory {
+
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(5, ItemStack.EMPTY);
 
     private static final TrackedData<Boolean> SITTING =
+            DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> CHEST =
             DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationCooldown = 0;
+    public final AnimationState chestAnimationState = new AnimationState();
+    private int chestAnimationCooldown = 0;
     public final AnimationState sittingAnimationState = new AnimationState();
-    private int sittingAnimationCooldown = 0;
+
 
     private static final double MAX_HEALTH = 15.0D;
     private static final double MOVEMENT_SPEED = 0.3D;
@@ -73,6 +87,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(SITTING, false);
+        this.dataTracker.startTracking(CHEST, false);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -81,6 +96,23 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, MOVEMENT_SPEED)
                 .add(EntityAttributes.GENERIC_ARMOR, ARMOR)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, ATTACK_DAMAGE);
+    }
+
+    @Override
+    public boolean damage(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        }
+        else {
+            Entity entity = source.getAttacker();
+            if (!this.getWorld().isClient) {
+                this.setSitting(false);
+            }
+            if (entity != null && !(entity instanceof PlayerEntity) && !(entity instanceof PersistentProjectileEntity)) {
+                amount = (amount + 1.0F) / 2.0F;
+            }
+        }
+        return super.damage(source, amount);
     }
 
     @Override
@@ -101,7 +133,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
         }
     }
 
-    private void setupAnimationStates() {
+    private void idleAnimation() {
         if (this.idleAnimationCooldown <= 0 && !this.isSitting()) {
             this.idleAnimationCooldown = this.random.nextInt(40) + 80;
             this.idleAnimationState.start(this.age);
@@ -109,15 +141,24 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
         else {
             this.idleAnimationCooldown--;
         }
+    }
 
-        if(this.isSitting() && sittingAnimationCooldown == 0) {
-            sittingAnimationCooldown = 40;
+    private void sittingAnimation() {
+        if(this.isSitting()) {
             this.sittingAnimationState.start(this.age);
         }
-
-        if(!this.isSitting()) {
-            sittingAnimationCooldown = 0;
+        else {
             sittingAnimationState.stop();
+        }
+    }
+
+    private void chestAnimation() {
+        if (this.chestAnimationCooldown <= 0) {
+            this.chestAnimationCooldown = this.random.nextInt(40) + 80;
+            this.chestAnimationState.start(this.age);
+        }
+        else {
+            this.chestAnimationCooldown--;
         }
     }
 
@@ -125,7 +166,8 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
     public void tick() {
         super.tick();
         if (this.getWorld().isClient()) {
-            setupAnimationStates();
+            this.idleAnimation();
+            this.sittingAnimation();
         }
     }
 
@@ -144,38 +186,75 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
     @Override
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
-        Item item = itemStack.getItem();
-
-        Item itemForTaming = ModItems.TOMATO_GOLDEN;
-
-        if(item == itemForTaming && !isTamed()) {
-            if(this.getWorld().isClient()) {
-                return ActionResult.CONSUME;
+        if (this.getWorld().isClient) {
+            boolean bl = this.isOwner(player) || this.isTamed() || itemStack.isOf(Items.BONE_MEAL) && !this.isTamed();
+            return bl ? ActionResult.CONSUME : ActionResult.PASS;
+        }
+        if (this.isTamed()) {
+            //TODO: FIX CHEST ANIMATION
+            if(this.isOwner(player) && (player.isInPose(EntityPose.CROUCHING) || player.isInPose(EntityPose.FALL_FLYING))) {
+                if(this.hasChest()) {
+                    if(itemStack.isOf(Items.SHEARS)) {
+                        this.dropInventory();
+                        return ActionResult.SUCCESS;
+                    }
+                    player.openHandledScreen(this);
+                    this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 1f, 1f);
+                    return ActionResult.SUCCESS;
+                }
+                if(itemStack.isOf(Blocks.CHEST.asItem())) {
+                    this.setHasChest(true);
+                    if(!player.getAbilities().creativeMode) {
+                        itemStack.decrement(1);
+                    }
+                    this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1f, 1f);
+                    return ActionResult.SUCCESS;
+                }
+                return ActionResult.PASS;
             }
-            else {
-                if(!player.getAbilities().creativeMode) {
+            if (this.isBreedingItem(itemStack) && this.getHealth() < this.getMaxHealth()) {
+                if (!player.getAbilities().creativeMode) {
                     itemStack.decrement(1);
                 }
-                if(!this.getWorld().isClient()) {
-                    super.setOwner(player);
-                    this.navigation.recalculatePath();
-                    this.setTarget(null);
-                    this.getWorld().sendEntityStatus(this, (byte)7);
-                    setSitting(true);
+
+                this.heal(1F);
+                if(this.getHealth() >= this.getMaxHealth()) {
+                    this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
                 }
                 return ActionResult.SUCCESS;
             }
+            else {
+                ActionResult actionResult = super.interactMob(player, hand);
+                if ((!actionResult.isAccepted() || this.isBaby()) && this.isOwner(player)) {
+                    this.setSitting(!this.isSitting());
+                    this.jumping = false;
+                    this.navigation.stop();
+                    this.setTarget(null);
+                    return ActionResult.SUCCESS;
+                }
+                else {
+                    return actionResult;
+                }
+            }
         }
+        if (itemStack.isOf(Items.BONE_MEAL)) {
+            if (!player.getAbilities().creativeMode) {
+                itemStack.decrement(1);
+            }
 
-        if(isTamed() && !this.getWorld().isClient() && hand == Hand.MAIN_HAND) {
-            setSitting(!isSitting());
+            if (this.random.nextInt(3) == 0) {
+                this.setOwner(player);
+                this.navigation.stop();
+                this.setTarget(null);
+                this.setSitting(true);
+                this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_POSITIVE_PLAYER_REACTION_PARTICLES);
+            }
+            else {
+                this.getWorld().sendEntityStatus(this, EntityStatuses.ADD_NEGATIVE_PLAYER_REACTION_PARTICLES);
+            }
+
             return ActionResult.SUCCESS;
         }
-
-        if(itemStack.getItem() == itemForTaming) {
-            return ActionResult.PASS;
-        }
-
         return super.interactMob(player, hand);
     }
 
@@ -189,21 +268,28 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
         return this.dataTracker.get(SITTING);
     }
 
+    public void setHasChest(boolean chest) {
+        this.dataTracker.set(CHEST, chest);
+    }
+
+    public boolean hasChest() {
+        return this.dataTracker.get(CHEST);
+    }
+
     @Override
-    public void setTamed(boolean tamed) {
-        super.setTamed(tamed);
-        if(tamed) {
-            getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH*2);
-            getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(MOVEMENT_SPEED*2);
-            getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ARMOR*2);
-            getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ATTACK_DAMAGE*2);
+    protected void onTamedChanged() {
+        if(this.isTamed()) {
+            this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH*2);
+            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(MOVEMENT_SPEED*2);
+            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ARMOR*2);
+            this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ATTACK_DAMAGE*2);
+            this.setHealth((float)MAX_HEALTH*2);
         }
         else {
-            getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH);
-            getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(MOVEMENT_SPEED);
-            getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ARMOR);
-            getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ATTACK_DAMAGE);
-
+            this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH);
+            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(MOVEMENT_SPEED);
+            this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ARMOR);
+            this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ATTACK_DAMAGE);
         }
     }
 
@@ -218,9 +304,25 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
     }
 
     @Override
+    protected void dropInventory() {
+        super.dropInventory();
+        if (this.hasChest()) {
+            if (!this.getWorld().isClient) {
+                this.dropItem(Blocks.CHEST);
+                for(int i = 0; i < inventory.size(); i++) {
+                    dropStack(inventory.get(i));
+                }
+            }
+
+            this.setHasChest(false);
+        }
+    }
+
+    @Override
     public void onDeath(DamageSource damageSource) {
-        super.onDeath(damageSource);
+        this.dropInventory();
         this.getWorld().spawnEntity(new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), new ItemStack(ModItems.TOMATO_SEEDS, random.nextBetween(1, 4))));
+        super.onDeath(damageSource);
     }
 
     @Override
@@ -244,16 +346,63 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob 
 
     @Override
     protected @Nullable SoundEvent getAmbientSound() {
-        return SoundEvents.ENTITY_STRAY_AMBIENT;
+        return SoundEvents.ENTITY_CAT_AMBIENT;
     }
 
     @Override
     protected @Nullable SoundEvent getHurtSound(DamageSource source) {
-        return SoundEvents.ENTITY_STRAY_HURT;
+        return SoundEvents.ENTITY_CAT_HURT;
     }
 
     @Override
     protected @Nullable SoundEvent getDeathSound() {
-        return SoundEvents.ENTITY_STRAY_DEATH;
+        return SoundEvents.ENTITY_CAT_DEATH;
+    }
+
+    @Override
+    public DefaultedList<ItemStack> getItems() {
+        return inventory;
+    }
+
+    @Override
+    public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+        return new TomatoScreenHandler(syncId, playerInventory, this);
+    }
+
+    @Override
+    public void onClose(PlayerEntity player) {
+        this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 1f, 1f);
+        ImplementedInventory.super.onClose(player);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        if(!this.hasCustomName()) {
+            return Text.translatable("entity.lugomfoods.tomato_dude");
+        }
+        return super.getDisplayName();
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        super.readCustomDataFromNbt(nbt);
+        this.setHasChest(nbt.getBoolean("ChestedTomatoDude"));
+        if(this.hasChest()) {
+            Inventories.readNbt(nbt, this.inventory);
+        }
+        this.setSitting(nbt.getBoolean("Sitting"));
+    }
+
+    @Override
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        super.writeCustomDataToNbt(nbt);
+        nbt.putBoolean("ChestedTomatoDude", this.hasChest());
+        if(this.hasChest()) {
+            Inventories.writeNbt(nbt, this.inventory);
+        }
+        nbt.putBoolean("Sitting", this.isSitting());
+        return nbt;
     }
 }

@@ -2,6 +2,7 @@ package net.lugom.lugomfoods.entity.client;
 
 import net.lugom.lugomfoods.LugomFoods;
 import net.lugom.lugomfoods.entity.custom.TomatoDudeEntity;
+import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
@@ -9,8 +10,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class TomatoDudeRenderer extends MobEntityRenderer<TomatoDudeEntity, TomatoDudeModel<TomatoDudeEntity>> {
-    private static int num = 0;
-    private static int cooldown = 0;
+    private int num = 0;
+    private int cooldown = 0;
     private static final Identifier TEXTURE = new Identifier(LugomFoods.MOD_ID, "textures/entity/tomato_dude.png");
     private static final Identifier TEXTURE_BLINK = new Identifier(LugomFoods.MOD_ID, "textures/entity/tomato_dude_blink.png");
     private static final Identifier TEXTURE_TAMED = new Identifier(LugomFoods.MOD_ID, "textures/entity/tomato_dude_tamed.png");

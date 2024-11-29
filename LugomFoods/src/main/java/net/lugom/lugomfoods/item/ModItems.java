@@ -34,32 +34,12 @@ public class ModItems {
     public static final Item[] SEEDS = new Item[]{TOMATO_SEEDS, STRAWBERRY_SEEDS};
 
 
-    private static void addItemsToIngredientsGroup(FabricItemGroupEntries entries) {
-        entries.add(TOMATO);
-        entries.add(TOMATO_GREEN);
-        entries.add(TOMATO_GOLDEN);
-        entries.add(STRAWBERRY);
-        entries.add(STRAWBERRY_GREEN);
-        entries.add(STRAWBERRY_GOLDEN);
-    }
-    private static void addItemsToCombatGroup(FabricItemGroupEntries entries) {
-        entries.add(TOMATO_THROWABLE);
-    }
-
-    private static void addItemsToNaturalGroup(FabricItemGroupEntries entries) {
-        entries.add(TOMATO_SEEDS);
-        entries.add(STRAWBERRY_SEEDS);
-    }
-
     private static <T extends Item> T register(String name, T item) {
         return Registry.register(Registries.ITEM, Identifier.of(LugomFoods.MOD_ID, name), item);
     }
 
     public static void initialize() {
         LugomFoods.LOGGER.info(LugomFoods.MOD_ID + ": Registering items");
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(ModItems::addItemsToIngredientsGroup);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register(ModItems::addItemsToCombatGroup);
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.NATURAL).register(ModItems::addItemsToNaturalGroup);
     }
 
     private static class ModFoodComponents {

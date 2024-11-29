@@ -37,23 +37,13 @@ public class TomatoDudeAnimations {
                                     Transformation.Interpolations.LINEAR),
                             new Keyframe(2f, AnimationHelper.createTranslationalVector(0f, 0f, 0f),
                                     Transformation.Interpolations.LINEAR))).build();
-    /*public static final Animation TOMATO_DUDE_ATTACK = Animation.Builder.create(2f).looping()
-            .addBoneAnimation("head",
+    public static final Animation TOMATO_DUDE_CHEST_OPEN = Animation.Builder.create(2f).looping()
+            .addBoneAnimation("item_chest_up",
                     new Transformation(Transformation.Targets.ROTATE,
                             new Keyframe(0f, AnimationHelper.createRotationalVector(0f, 0f, 0f),
                                     Transformation.Interpolations.LINEAR),
-                            new Keyframe(1f, AnimationHelper.createRotationalVector(42.5f, 0f, 0f),
-                                    Transformation.Interpolations.LINEAR),
-                            new Keyframe(2f, AnimationHelper.createRotationalVector(0f, 0f, 0f),
-                                    Transformation.Interpolations.LINEAR)))
-            .addBoneAnimation("head",
-                    new Transformation(Transformation.Targets.SCALE,
-                            new Keyframe(0.75f, AnimationHelper.createScalingVector(1f, 1f, 1f),
-                                    Transformation.Interpolations.LINEAR),
-                            new Keyframe(1f, AnimationHelper.createScalingVector(1.2f, 1.2f, 1.2f),
-                                    Transformation.Interpolations.LINEAR),
-                            new Keyframe(1.25f, AnimationHelper.createScalingVector(1f, 1f, 1f),
-                                    Transformation.Interpolations.LINEAR))).build();*/
+                            new Keyframe(1f, AnimationHelper.createRotationalVector(30f, 0f, 0f),
+                                    Transformation.Interpolations.LINEAR))).build();
     public static final Animation TOMATO_DUDE_SIT = Animation.Builder.create(1f)
             .addBoneAnimation("head",
                     new Transformation(Transformation.Targets.TRANSLATE,

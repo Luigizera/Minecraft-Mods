@@ -4,6 +4,7 @@ import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.entity.custom.TomatoDudeEntity;
 import net.lugom.lugomfoods.item.ModItems;
 import net.minecraft.block.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
@@ -85,9 +86,17 @@ public class TomatoCropBlock extends CropBlock {
                 if (tomatoDudeEntity != null) {
                     tomatoDudeEntity.refreshPositionAndAngles(pos.getX(), pos.getY(), pos.getZ(), 0, 0.0F);
                     world.spawnEntity(tomatoDudeEntity);
+                    changeCropBlockState(state, world, pos, tomatoDudeEntity);
                 }
             }
         }
+    }
+
+    private void changeCropBlockState(BlockState state, World world, BlockPos pos, Entity sourceEntity) {
+        world.playSound(null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);
+        BlockState blockState = state.with(AGE, Integer.valueOf(3));
+        world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
+        world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(sourceEntity, blockState));
     }
 
     private boolean isTomatoCropNearbyMaxAge(WorldView world, BlockPos pos) {
@@ -135,10 +144,7 @@ public class TomatoCropBlock extends CropBlock {
         else {
             dropStack(world, pos, new ItemStack(ModItems.TOMATO, 1 + world.random.nextInt(3)));
         }
-        world.playSound(null, pos, SoundEvents.BLOCK_SWEET_BERRY_BUSH_PICK_BERRIES, SoundCategory.BLOCKS, 1.0F, 0.8F + world.random.nextFloat() * 0.4F);
-        BlockState blockState = state.with(AGE, Integer.valueOf(3));
-        world.setBlockState(pos, blockState, Block.NOTIFY_LISTENERS);
-        world.emitGameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Emitter.of(player, blockState));
+        changeCropBlockState(state, world, pos, player);
         return ActionResult.success(world.isClient);
     }
 
@@ -149,9 +155,6 @@ public class TomatoCropBlock extends CropBlock {
 
     @Override
     public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction) {
-        if(state.get(AGE) == MAX_AGE) {
-            return 1;
-        }
-        return 0;
+        return state.get(AGE) == MAX_AGE ? 1 : 0;
     }
 }

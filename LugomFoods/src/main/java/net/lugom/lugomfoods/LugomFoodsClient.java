@@ -11,6 +11,9 @@ import net.lugom.lugomfoods.entity.client.TomatoDudeModel;
 import net.lugom.lugomfoods.entity.client.TomatoDudeRenderer;
 import net.lugom.lugomfoods.particles.ModParticles;
 import net.lugom.lugomfoods.particles.custom.TomatoParticle;
+import net.lugom.lugomfoods.screen.ModScreenHandler;
+import net.lugom.lugomfoods.screen.custom.TomatoScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 
@@ -23,6 +26,6 @@ public class LugomFoodsClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(ModParticles.TOMATO_PARTICLE, TomatoParticle.Factory::new);
         EntityRendererRegistry.register(ModEntities.TOMATO_DUDE, TomatoDudeRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(TomatoDudeModel.TOMATO_DUDE_MODEL, TomatoDudeModel::getTexturedModelData);
-
+        HandledScreens.register(ModScreenHandler.TOMATO_DUDE_SCREEN_HANDLER, TomatoScreen::new);
     }
 }
