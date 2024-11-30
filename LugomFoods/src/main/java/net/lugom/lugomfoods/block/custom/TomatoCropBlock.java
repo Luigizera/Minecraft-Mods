@@ -78,10 +78,16 @@ public class TomatoCropBlock extends CropBlock {
     }
 
     @Override
+    public boolean hasRandomTicks(BlockState state) {
+        return true;
+    }
+
+    @Override
     public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         super.randomTick(state, world, pos, random);
         if (!world.isClient) {
-            if (isTomatoCropNearbyMaxAge(world, pos) && (float) random.nextBetween(0, 100) / 100 < 0.05F) {
+            boolean chance = (float) random.nextBetween(0, 100) / 100 < 0.05F;
+            if (this.isMature(state) && chance && isTomatoCropNearbyMaxAge(world, pos)) {
                 TomatoDudeEntity tomatoDudeEntity = ModEntities.TOMATO_DUDE.create(world);
                 if (tomatoDudeEntity != null) {
                     tomatoDudeEntity.refreshPositionAndAngles(pos.getX(), pos.getY(), pos.getZ(), 0, 0.0F);
@@ -102,8 +108,8 @@ public class TomatoCropBlock extends CropBlock {
     private boolean isTomatoCropNearbyMaxAge(WorldView world, BlockPos pos) {
         for (BlockPos blockPos : BlockPos.iterate(pos.add(-1, 0, -1), pos.add(1, 0, 1))) {
             BlockState blockState = world.getBlockState(blockPos);
-            if (blockState.getBlock() instanceof TomatoCropBlock tomatoCrop && blockPos != pos) {
-                if(tomatoCrop.getAge(blockState) == tomatoCrop.getMaxAge() ) {
+            if (blockState.getBlock() instanceof TomatoCropBlock tomatoCrop && blockPos.compareTo(pos) != 0) {
+                if(tomatoCrop.isMature(blockState)) {
                     return true;
                 }
             }

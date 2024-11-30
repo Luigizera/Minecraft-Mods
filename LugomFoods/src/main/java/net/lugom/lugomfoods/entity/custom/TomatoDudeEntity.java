@@ -33,6 +33,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -277,6 +278,14 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     }
 
     @Override
+    public boolean canTarget(LivingEntity target) {
+        if (target instanceof Tameable tameable) {
+            return tameable.getOwner() != this.getOwner() && super.canTarget(target);
+        }
+        return !this.isOwner(target) && super.canTarget(target);
+    }
+
+    @Override
     protected void onTamedChanged() {
         if(this.isTamed()) {
             this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH*2);
@@ -312,6 +321,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
                 for(int i = 0; i < inventory.size(); i++) {
                     dropStack(inventory.get(i));
                 }
+                inventory.clear();
             }
 
             this.setHasChest(false);
