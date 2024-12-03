@@ -6,6 +6,7 @@ import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
 import net.lugom.lugomfoods.item.ModItemsGroup;
 import net.lugom.lugomfoods.particles.ModParticles;
+import net.lugom.lugomfoods.screen.ModScreenHandler;
 import net.lugom.lugomfoods.village.ModVillagerTrades;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,5 +24,6 @@ public class LugomFoods implements ModInitializer {
 		ModParticles.initialize();
 		ModVillagerTrades.initialize();
 		ModEntities.initialize();
+		ModScreenHandler.initialize();
 	}
 }

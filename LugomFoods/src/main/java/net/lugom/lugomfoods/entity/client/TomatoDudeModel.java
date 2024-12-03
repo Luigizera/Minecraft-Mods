@@ -93,14 +93,16 @@ public class TomatoDudeModel<T extends TomatoDudeEntity> extends SinglePartEntit
 		this.animateMovement(TomatoDudeAnimations.TOMATO_DUDE_WALK, limbAngle, limbDistance, 2f, 2.5f);
 		this.updateAnimation(entity.idleAnimationState, TomatoDudeAnimations.TOMATO_DUDE_IDLE, animationProgress, 1f);
 		this.updateAnimation(entity.sittingAnimationState, TomatoDudeAnimations.TOMATO_DUDE_SIT, animationProgress, 1f);
-		this.updateAnimation(entity.chestAnimationState, TomatoDudeAnimations.TOMATO_DUDE_CHEST_OPEN, animationProgress, 1f);
 	}
 
 	private void setHeadAngles(float headYaw, float headPitch) {
-		headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
+		/*headYaw = MathHelper.clamp(headYaw, -30.0F, 30.0F);
 		headPitch = MathHelper.clamp(headPitch, -25.0F,45.0F);
 		this.head.yaw = headYaw * 0.017F;
 		this.head.pitch = headPitch * 0.017F;
+		 */
+		this.head.yaw = headYaw * (float) (Math.PI / 180.0);
+		this.head.pitch = headPitch * (float) (Math.PI / 180.0);
 	}
 
 	private void updateVisibleParts(T tomatoDude) {

@@ -1,5 +1,6 @@
 package net.lugom.lugomfoods.block;
 
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.lugom.lugomfoods.LugomFoods;
@@ -7,6 +8,7 @@ import net.lugom.lugomfoods.block.custom.StrawberryCropBlock;
 import net.lugom.lugomfoods.block.custom.TomatoCropBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -31,5 +33,10 @@ public class ModBlocks {
 
     public static void initialize() {
         LugomFoods.LOGGER.info(LugomFoods.MOD_ID + ": Registering blocks");
+    }
+
+    public static void registerBlockRenderers() {
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TOMATO_CROP, RenderLayer.getCutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STRAWBERRY_CROP, RenderLayer.getCutout());
     }
 }

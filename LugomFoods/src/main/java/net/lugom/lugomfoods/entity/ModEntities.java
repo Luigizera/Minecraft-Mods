@@ -1,10 +1,15 @@
 package net.lugom.lugomfoods.entity;
 
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.lugom.lugomfoods.LugomFoods;
+import net.lugom.lugomfoods.entity.client.TomatoDudeModel;
+import net.lugom.lugomfoods.entity.client.TomatoDudeRenderer;
 import net.lugom.lugomfoods.entity.custom.TomatoDudeEntity;
 import net.lugom.lugomfoods.entity.custom.TomatoThrowableEntity;
+import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -29,5 +34,11 @@ public class ModEntities {
     public static void initialize() {
         LugomFoods.LOGGER.info(LugomFoods.MOD_ID + ": Registering entities");
         FabricDefaultAttributeRegistry.register(ModEntities.TOMATO_DUDE, TomatoDudeEntity.createAttributes());
+    }
+
+    public static void registerEntitiesRenderers() {
+        EntityRendererRegistry.register(ModEntities.TOMATO_PROJECTILE, FlyingItemEntityRenderer::new);
+        EntityRendererRegistry.register(ModEntities.TOMATO_DUDE, TomatoDudeRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(TomatoDudeModel.TOMATO_DUDE_MODEL, TomatoDudeModel::getTexturedModelData);
     }
 }

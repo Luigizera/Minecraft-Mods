@@ -20,12 +20,9 @@ import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 public class LugomFoodsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TOMATO_CROP, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STRAWBERRY_CROP, RenderLayer.getCutout());
-        EntityRendererRegistry.register(ModEntities.TOMATO_PROJECTILE, FlyingItemEntityRenderer::new);
-        ParticleFactoryRegistry.getInstance().register(ModParticles.TOMATO_PARTICLE, TomatoParticle.Factory::new);
-        EntityRendererRegistry.register(ModEntities.TOMATO_DUDE, TomatoDudeRenderer::new);
-        EntityModelLayerRegistry.registerModelLayer(TomatoDudeModel.TOMATO_DUDE_MODEL, TomatoDudeModel::getTexturedModelData);
-        HandledScreens.register(ModScreenHandler.TOMATO_DUDE_SCREEN_HANDLER, TomatoScreen::new);
+        ModBlocks.registerBlockRenderers();
+        ModEntities.registerEntitiesRenderers();
+        ModParticles.registerParticleRenderers();
+        ModScreenHandler.registerScreenRenderers();
     }
 }

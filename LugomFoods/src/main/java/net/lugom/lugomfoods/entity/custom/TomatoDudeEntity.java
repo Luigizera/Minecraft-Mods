@@ -1,9 +1,11 @@
 package net.lugom.lugomfoods.entity.custom;
 
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
 import net.lugom.lugomfoods.util.ImplementedInventory;
 import net.lugom.lugomfoods.screen.custom.TomatoScreenHandler;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RangedAttackMob;
@@ -23,9 +25,11 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -40,9 +44,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob, NamedScreenHandlerFactory, ImplementedInventory {
+public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob, ExtendedScreenHandlerFactory, ImplementedInventory {
 
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(5, ItemStack.EMPTY);
+    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(6, ItemStack.EMPTY);
 
     private static final TrackedData<Boolean> SITTING =
             DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
@@ -194,16 +198,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         if (this.isTamed()) {
             //TODO: FIX CHEST ANIMATION
             if(this.isOwner(player) && (player.isInPose(EntityPose.CROUCHING) || player.isInPose(EntityPose.FALL_FLYING))) {
-                if(this.hasChest()) {
-                    if(itemStack.isOf(Items.SHEARS)) {
-                        this.dropInventory();
-                        return ActionResult.SUCCESS;
-                    }
-                    player.openHandledScreen(this);
-                    this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 1f, 1f);
-                    return ActionResult.SUCCESS;
-                }
-                if(itemStack.isOf(Blocks.CHEST.asItem())) {
+                if(itemStack.isOf(Blocks.CHEST.asItem()) && !this.hasChest() && this.canHaveChest()) {
                     this.setHasChest(true);
                     if(!player.getAbilities().creativeMode) {
                         itemStack.decrement(1);
@@ -211,7 +206,17 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
                     this.playSound(SoundEvents.ENTITY_DONKEY_CHEST, 1f, 1f);
                     return ActionResult.SUCCESS;
                 }
-                return ActionResult.PASS;
+
+                if(this.hasChest()) {
+                    if(itemStack.isOf(Items.SHEARS)) {
+                        this.dropInventory();
+                        this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1f, 1f);
+                        return ActionResult.SUCCESS;
+                    }
+                    this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 1f, 1f);
+                }
+                player.openHandledScreen(this);
+                return ActionResult.SUCCESS;
             }
             if (this.isBreedingItem(itemStack) && this.getHealth() < this.getMaxHealth()) {
                 if (!player.getAbilities().creativeMode) {
@@ -275,6 +280,14 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
 
     public boolean hasChest() {
         return this.dataTracker.get(CHEST);
+    }
+
+    public boolean canHaveChest() {
+        return this.isAlive() && !this.isBaby() && this.isTamed();
+    }
+
+    public int getInventoryColumns() {
+        return 3;
     }
 
     @Override
@@ -376,7 +389,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
 
     @Override
     public @Nullable ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        return new TomatoScreenHandler(syncId, playerInventory, this);
+        return new TomatoScreenHandler(syncId, playerInventory, this, this);
     }
 
     @Override
@@ -414,5 +427,12 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         }
         nbt.putBoolean("Sitting", this.isSitting());
         return nbt;
+    }
+
+    @Override
+    public void writeScreenOpeningData(ServerPlayerEntity serverPlayerEntity, PacketByteBuf packetByteBuf) {
+        int id = this.getId();
+        packetByteBuf.writeInt(id);
+        packetByteBuf.writeInt(id);
     }
 }
