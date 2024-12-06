@@ -37,12 +37,10 @@ public class TomatoDudeAnimations {
                                     Transformation.Interpolations.LINEAR),
                             new Keyframe(2f, AnimationHelper.createTranslationalVector(0f, 0f, 0f),
                                     Transformation.Interpolations.LINEAR))).build();
-    public static final Animation TOMATO_DUDE_CHEST_OPEN = Animation.Builder.create(2f).looping()
+    public static final Animation TOMATO_DUDE_CHEST_OPEN = Animation.Builder.create(0f).looping()
             .addBoneAnimation("item_chest_up",
                     new Transformation(Transformation.Targets.ROTATE,
-                            new Keyframe(0f, AnimationHelper.createRotationalVector(0f, 0f, 0f),
-                                    Transformation.Interpolations.LINEAR),
-                            new Keyframe(1f, AnimationHelper.createRotationalVector(30f, 0f, 0f),
+                            new Keyframe(0f, AnimationHelper.createRotationalVector(30f, 0f, 0f),
                                     Transformation.Interpolations.LINEAR))).build();
     public static final Animation TOMATO_DUDE_SIT = Animation.Builder.create(1f)
             .addBoneAnimation("head",

@@ -75,10 +75,10 @@ public class TomatoThrowableEntity extends ThrownItemEntity {
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             this.getWorld().sendEntityStatus(this, EntityStatuses.PLAY_DEATH_SOUND_OR_ADD_PROJECTILE_HIT_PARTICLES);
-            this.discard();
             if(this.getOwner() instanceof PlayerEntity) {
                 this.getWorld().spawnEntity(new ItemEntity(this.getWorld(), this.getX(), this.getY(), this.getZ(), new ItemStack(ModItems.TOMATO_SEEDS, random.nextBetween(0, 4))));
             }
+            this.discard();
         }
     }
 }

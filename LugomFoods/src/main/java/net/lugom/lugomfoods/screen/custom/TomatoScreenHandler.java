@@ -30,7 +30,7 @@ public class TomatoScreenHandler extends ScreenHandler {
         this(syncId, playerInventory, new SimpleInventory(6), (TomatoDudeEntity) playerInventory.player.getWorld().getEntityById(buf.readInt()));
         this.entityId = buf.readInt();
         this.entity = (TomatoDudeEntity) playerInventory.player.getWorld().getEntityById(entityId);
-        this.inventory.onOpen(playerInventory.player);
+
     }
 
     // This constructor gets called from the BlockEntity on the server without calling the other constructor first, the server knows the inventory of the container
@@ -40,6 +40,7 @@ public class TomatoScreenHandler extends ScreenHandler {
         checkSize(inventory, 6);
         this.inventory = inventory;
         this.entity = entity;
+        this.inventory.onOpen(playerInventory.player);
 
         int w;
         int h;
@@ -54,7 +55,6 @@ public class TomatoScreenHandler extends ScreenHandler {
         addPlayerInventory(playerInventory);
     }
 
-
     private void addPlayerInventory(PlayerInventory playerInventory) {
         int w;
         int h;
@@ -68,6 +68,14 @@ public class TomatoScreenHandler extends ScreenHandler {
         for (w = 0; w < 9; ++w) {
             this.addSlot(new Slot(playerInventory, w, 8 + w * 18, 142));
         }
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        this.inventory.markDirty();
+
+        this.inventory.onClose(player);
     }
 
     public TomatoDudeEntity getEntity(){

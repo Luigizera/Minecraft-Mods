@@ -56,7 +56,6 @@ public class TomatoDudeRenderer extends MobEntityRenderer<TomatoDudeEntity, Toma
             matrixStack.scale(1f, 1f, 1f);
         }
 
-
         super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 }

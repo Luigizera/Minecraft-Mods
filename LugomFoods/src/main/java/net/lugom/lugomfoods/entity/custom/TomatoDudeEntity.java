@@ -5,7 +5,6 @@ import net.lugom.lugomfoods.entity.ModEntities;
 import net.lugom.lugomfoods.item.ModItems;
 import net.lugom.lugomfoods.util.ImplementedInventory;
 import net.lugom.lugomfoods.screen.custom.TomatoScreenHandler;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.RangedAttackMob;
@@ -27,7 +26,6 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -37,7 +35,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.EntityView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -50,13 +47,16 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
 
     private static final TrackedData<Boolean> SITTING =
             DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private static final TrackedData<Boolean> IS_CHEST_OPEN =
+            DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     private static final TrackedData<Boolean> CHEST =
             DataTracker.registerData(TomatoDudeEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
+
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationCooldown = 0;
-    public final AnimationState chestAnimationState = new AnimationState();
-    private int chestAnimationCooldown = 0;
+    public final AnimationState chestOpenAnimationState = new AnimationState();
+    public final AnimationState chestCloseAnimationState = new AnimationState();
     public final AnimationState sittingAnimationState = new AnimationState();
 
 
@@ -93,6 +93,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         super.initDataTracker();
         this.dataTracker.startTracking(SITTING, false);
         this.dataTracker.startTracking(CHEST, false);
+        this.dataTracker.startTracking(IS_CHEST_OPEN, false);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
@@ -158,12 +159,11 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     }
 
     private void chestAnimation() {
-        if (this.chestAnimationCooldown <= 0) {
-            this.chestAnimationCooldown = this.random.nextInt(40) + 80;
-            this.chestAnimationState.start(this.age);
+        if (this.isChestOpen()) {
+            this.chestOpenAnimationState.start(this.age);
         }
         else {
-            this.chestAnimationCooldown--;
+            this.chestOpenAnimationState.stop();
         }
     }
 
@@ -173,6 +173,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         if (this.getWorld().isClient()) {
             this.idleAnimation();
             this.sittingAnimation();
+            this.chestAnimation();
         }
     }
 
@@ -196,7 +197,6 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
             return bl ? ActionResult.CONSUME : ActionResult.PASS;
         }
         if (this.isTamed()) {
-            //TODO: FIX CHEST ANIMATION
             if(this.isOwner(player) && (player.isInPose(EntityPose.CROUCHING) || player.isInPose(EntityPose.FALL_FLYING))) {
                 if(itemStack.isOf(Blocks.CHEST.asItem()) && !this.hasChest() && this.canHaveChest()) {
                     this.setHasChest(true);
@@ -213,7 +213,6 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
                         this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1f, 1f);
                         return ActionResult.SUCCESS;
                     }
-                    this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 1f, 1f);
                 }
                 player.openHandledScreen(this);
                 return ActionResult.SUCCESS;
@@ -282,6 +281,14 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         return this.dataTracker.get(CHEST);
     }
 
+    public void setChestOpen(boolean is_chest_open) {
+        this.dataTracker.set(IS_CHEST_OPEN, is_chest_open);
+    }
+
+    public boolean isChestOpen() {
+        return this.dataTracker.get(IS_CHEST_OPEN);
+    }
+
     public boolean canHaveChest() {
         return this.isAlive() && !this.isBaby() && this.isTamed();
     }
@@ -331,8 +338,8 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         if (this.hasChest()) {
             if (!this.getWorld().isClient) {
                 this.dropItem(Blocks.CHEST);
-                for(int i = 0; i < inventory.size(); i++) {
-                    dropStack(inventory.get(i));
+                for (ItemStack itemStack : inventory) {
+                    dropStack(itemStack);
                 }
                 inventory.clear();
             }
@@ -393,9 +400,17 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     }
 
     @Override
+    public void onOpen(PlayerEntity player) {
+        ImplementedInventory.super.onOpen(player);
+        this.setChestOpen(true);
+        this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f);
+    }
+
+    @Override
     public void onClose(PlayerEntity player) {
-        this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 1f, 1f);
         ImplementedInventory.super.onClose(player);
+        this.setChestOpen(false);
+        this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1f);
     }
 
     @Override
