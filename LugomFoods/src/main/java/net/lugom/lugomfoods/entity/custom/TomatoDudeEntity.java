@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -56,7 +57,6 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationCooldown = 0;
     public final AnimationState chestOpenAnimationState = new AnimationState();
-    public final AnimationState chestCloseAnimationState = new AnimationState();
     public final AnimationState sittingAnimationState = new AnimationState();
 
 
@@ -73,12 +73,11 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new ProjectileAttackGoal(this, 1.25, 2*20, 10.0F));
         this.goalSelector.add(1, new SitGoal(this));
-        this.goalSelector.add(2, new AnimalMateGoal(this, 1.15D));
-        this.goalSelector.add(3, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
-        this.goalSelector.add(4, new TemptGoal(this, 1.25D, Ingredient.ofItems(ModItems.TOMATO_GOLDEN), false));
-        this.goalSelector.add(5, new FollowParentGoal(this, 1.15D));
+        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.25, 2*20, 10.0F));
+        this.goalSelector.add(3, new AnimalMateGoal(this, 1.15D));
+        this.goalSelector.add(4, new FollowOwnerGoal(this, 1.0, 10.0F, 2.0F, false));
+        this.goalSelector.add(5, new TemptGoal(this, 1.25D, Ingredient.ofItems(this.getBreedingItem()), false));
         this.goalSelector.add(6, new WanderAroundFarGoal(this, 1.0D));
         this.goalSelector.add(10, new LookAtEntityGoal(this, PlayerEntity.class, 4f));
         this.goalSelector.add(10, new LookAroundGoal(this));
@@ -123,7 +122,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
 
     @Override
     public void attack(LivingEntity target, float pullProgress) {
-        if(this.canTarget(target) && !isSitting()) {
+        if(this.canTarget(target) && !this.isSitting()) {
             TomatoThrowableEntity tomatoThrowable = new TomatoThrowableEntity(this, this.getWorld());
             double d = target.getEyeY() - 1.1F;
             double e = target.getX() - this.getX();
@@ -159,7 +158,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     }
 
     private void chestAnimation() {
-        if (this.isChestOpen()) {
+        if (this.isChestOpen() && this.hasChest()) {
             this.chestOpenAnimationState.start(this.age);
         }
         else {
@@ -193,7 +192,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     public ActionResult interactMob(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (this.getWorld().isClient) {
-            boolean bl = this.isOwner(player) || this.isTamed() || itemStack.isOf(Items.BONE_MEAL) && !this.isTamed();
+            boolean bl = this.isOwner(player) || this.isTamed() || itemStack.isOf(this.getBreedingItem()) && !this.isTamed();
             return bl ? ActionResult.CONSUME : ActionResult.PASS;
         }
         if (this.isTamed()) {
@@ -242,7 +241,7 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
                 }
             }
         }
-        if (itemStack.isOf(Items.BONE_MEAL)) {
+        if (itemStack.isOf(this.getBreedingItem())) {
             if (!player.getAbilities().creativeMode) {
                 itemStack.decrement(1);
             }
@@ -270,6 +269,16 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
 
     @Override
     public boolean isSitting() {
+        return this.dataTracker.get(SITTING);
+    }
+
+    @Override
+    public void setInSittingPose(boolean sitting) {
+        this.dataTracker.set(SITTING, sitting);
+    }
+
+    @Override
+    public boolean isInSittingPose() {
         return this.dataTracker.get(SITTING);
     }
 
@@ -309,7 +318,6 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     protected void onTamedChanged() {
         if(this.isTamed()) {
             this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(MAX_HEALTH*2);
-            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(MOVEMENT_SPEED*2);
             this.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).setBaseValue(ARMOR*2);
             this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(ATTACK_DAMAGE*2);
             this.setHealth((float)MAX_HEALTH*2);
@@ -360,6 +368,10 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
         return stack.isOf(Items.BONE_MEAL);
     }
 
+    public Item getBreedingItem() {
+        return Items.BONE_MEAL;
+    }
+
     @Override
     public @Nullable PassiveEntity createChild(ServerWorld world, PassiveEntity entity) {
         TomatoDudeEntity tomatoDudeEntity = ModEntities.TOMATO_DUDE.create(world);
@@ -403,14 +415,18 @@ public class TomatoDudeEntity extends TameableEntity implements RangedAttackMob,
     public void onOpen(PlayerEntity player) {
         ImplementedInventory.super.onOpen(player);
         this.setChestOpen(true);
-        this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f);
+        if(this.hasChest()) {
+            this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f);
+        }
     }
 
     @Override
     public void onClose(PlayerEntity player) {
         ImplementedInventory.super.onClose(player);
         this.setChestOpen(false);
-        this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1f);
+        if(this.hasChest()) {
+            this.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1f);
+        }
     }
 
     @Override
